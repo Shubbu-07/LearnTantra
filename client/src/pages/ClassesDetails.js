@@ -19,8 +19,7 @@ const ClassesDetails = () => {
   const [otpError, setOtpError] = useState('');
 
   // const navigate = useNavigate();
-
-
+  
   const fetchClassDetails = async () => {
     try {
       setLoading(true)

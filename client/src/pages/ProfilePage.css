@@ -2,9 +2,10 @@
 
 .profile-page {
     font-family: Arial, sans-serif;
-    color: #333;
-    background-color: #f9f9f9;
+    color: #F0F0F0;
+    background-color: #121212;
     padding: 20px;
+    height: 100vh;
 }
 
 .profile-info {
@@ -92,7 +93,7 @@
 .classroom-list table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
+    background-color: #333333;
     border-radius: 5px;
     overflow: hidden;
 }
@@ -110,7 +111,7 @@
 }
 
 .classroom-list tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #333333;
 }
 
 .classroom-list tr:hover {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./SearchPopup.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SearchPopup = ({ onClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
