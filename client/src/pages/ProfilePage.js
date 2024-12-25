@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import './ProfilePage.css';
 import { useNavigate } from 'react-router-dom';
+import './ProfilePage.css';
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);

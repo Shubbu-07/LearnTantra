@@ -84,8 +84,10 @@
 }
 
 .logout-btn:hover {
-    background-color: #f0f0f0;
+    background-color: #8fd2ff;
+
     color: #000;
+    border: 2px solid #8fd2ff;
 }
 
 /* Login button styling */

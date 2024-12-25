@@ -12,7 +12,7 @@
 }
 
 .search-popup-content {
-    background: white;
+    background: #333333;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 80%;
@@ -32,19 +32,18 @@
 
 .search-popup-close {
     position: absolute;
-  
-    right: 10px;
+    right: 2rem;
+    top: 1.75rem;
     background: #ff5c5c;
-    color: white;
     border: none;
     border-radius: 50%;
     width: 30px;
     height: 30px;
     display: flex;
-    align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 16px;
+    padding: 1px 0 0 0;
 }
 
 
@@ -80,16 +79,19 @@ input[type="text"] {
 
 .search-results li:hover {
     background-color: #f1f1f1;
+    color: #333333;
 }
 
 
 .search-results li span {
     display: block;
-    color: #333;
+    color: #f0f0f0;
     text-decoration: none;
 }
 
-
+.search-results li span:hover {
+    color: #333333;
+}
 
 .search-results li.no-results {
     text-align: center;

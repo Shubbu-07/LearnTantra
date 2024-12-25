@@ -49,6 +49,7 @@ const SearchPopup = ({ onClose }) => {
             placeholder="Search for classrooms..."
             value={searchTerm}
             onChange={handleSearchChange}
+            className="bg-secondary"
           />
           <button className="search-popup-close" onClick={onClose}>
             x
