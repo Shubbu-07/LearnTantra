@@ -38,7 +38,6 @@ const ProfilePage = () => {
 
     }, [])
 
-
     const fetchClassrooms = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/class/classroomscreatedbyme`, {
@@ -57,6 +56,7 @@ const ProfilePage = () => {
             toast.error('An error occurred while fetching classrooms');
         }
     }
+
     const fetchClassroomsJoinedByMe = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/class/classroomsforstudent`, {
@@ -75,14 +75,12 @@ const ProfilePage = () => {
         }
     }
 
-
     useEffect(() => {
         if (user) {
             fetchClassrooms();
             fetchClassroomsJoinedByMe()
         }
     }, [user]);
-
 
     const handleCreateClassroom = async () => {
         try {
@@ -120,64 +118,86 @@ const ProfilePage = () => {
     const handleRowClick = (classroomId) => {
         navigate(`/classes/${classroomId}`);  // Navigate to the class details page
     };
+    
     return (
-        <div className="profile-page">
-            {loading ? (
-                <div className="loading">Loading...</div>
-            )
-                : user ? (
-                    <>
-                        <h1>Profile</h1>
-                        <div className="profile-info">
-                            <img
-                                src={
-                                    'https://th.bing.com/th/id/OIP.OWHqt6GY5jrr7ETvJr8ZXwHaHa?w=160&h=180&c=7&r=0&o=5&pid=1.7'
-                                    || 'default-profile.png'
-                                }
-                                alt="Profile"
-                                className="profile-picture"
-                            />
-                            <div className="profile-details">
-                                <h2>{user.name}</h2>
-                                <p>Email: {user.email}</p>
-                                <p>Role: {user.role}</p>
-                                {user.role === 'teacher' && (
-                                    <button className="create-classroom-btn" onClick={() => setShowPopup(true)}>
-                                        Create Classroom
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-
-                        {showPopup && (
-                            <div className="popup-overlay">
-                                <div className="popup-content">
-                                    <h3>Create Classroom</h3>
-                                    <input
-                                        type="text"
-                                        placeholder="Classroom Name"
-                                        value={classroomName}
-                                        onChange={(e) => setClassroomName(e.target.value)}
-                                    />
-                                    <textarea
-                                        placeholder="Description"
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                    />
-
-                                    <div className="popup-buttons">
-                                        <button onClick={handleCreateClassroom}>Submit</button>
-                                        <button onClick={() => setShowPopup(false)}>Cancel</button>
-                                    </div>
+        <>
+        <div className="profile-container flex bg-background">
+            <div className="h-full w-20 md:w-64 ">
+                <img
+                    src={
+                    "https://th.bing.com/th/id/OIP.OWHqt6GY5jrr7ETvJr8ZXwHaHa?w=160&h=180&c=7&r=0&o=5&pid=1.7" ||
+                    "default-profile.png"
+                    }
+                    alt="Profile"
+                    className="rounded-full w-12 h-12 ms-5 my-4"
+                />
+            </div>
+                <div className="profile-page flex-auto">
+                    {loading ? (
+                        <div className="loading">Loading...</div>
+                    ) : user ? (
+                        <>
+                            <div className="profile-info">
+                                <div className="profile-details">
+                                    <h2>{user.name}</h2>
+                                    <p>Email: {user.email}</p>
+                                    <p>Role: {user.role}</p>
+                                    {user.role === 'teacher' && (
+                                        <button className="create-classroom-btn" onClick={() => setShowPopup(true)}>
+                                            Create Classroom
+                                        </button>
+                                    )}
                                 </div>
                             </div>
-                        )}
 
+                            {showPopup && (
+                                <div className="popup-overlay">
+                                    <div className="popup-content">
+                                        <h3>Create Classroom</h3>
+                                        <input
+                                            type="text"
+                                            placeholder="Classroom Name"
+                                            value={classroomName}
+                                            onChange={(e) => setClassroomName(e.target.value)}
+                                        />
+                                        <textarea
+                                            placeholder="Description"
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                        />
 
-                        {
-                            user.role === 'teacher' &&
+                                        <div className="popup-buttons">
+                                            <button onClick={handleCreateClassroom}>Submit</button>
+                                            <button onClick={() => setShowPopup(false)}>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {user.role === 'teacher' && (
+                                <div className="classroom-list">
+                                    <h3>Classrooms created by me</h3>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {classroomsCreatedByMe.map((classroom) => (
+                                                <tr key={classroom._id} onClick={() => handleRowClick(classroom._id)}>
+                                                    <td>{classroom.name}</td>
+                                                    <td>{classroom.description}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
                             <div className="classroom-list">
-                                <h3>Classrooms created by me</h3>
+                                <h3>Classrooms joined by me</h3>
                                 <table>
                                     <thead>
                                         <tr>
@@ -186,8 +206,12 @@ const ProfilePage = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {classroomsCreatedByMe.map(classroom => (
-                                            <tr key={classroom._id} onClick={() => handleRowClick(classroom._id)}>
+                                        {classroomsJoinedByMe.map((classroom) => (
+                                            <tr
+                                                key={classroom._id}
+                                                onClick={() => handleRowClick(classroom._id)}
+                                                className="clickable-row"
+                                            >
                                                 <td>{classroom.name}</td>
                                                 <td>{classroom.description}</td>
                                             </tr>
@@ -195,37 +219,14 @@ const ProfilePage = () => {
                                     </tbody>
                                 </table>
                             </div>
-
-
-                        }
-
-                        <div className="classroom-list">
-                            <h3>Classrooms joined by me</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {classroomsJoinedByMe.map(classroom => (
-                                        <tr key={classroom._id} onClick={() => handleRowClick(classroom._id)} className="clickable-row">
-                                            <td>{classroom.name}</td>
-                                            <td>{classroom.description}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </>
-                )
-                    : (
+                        </>
+                    ) : (
                         <p>No user data found.</p>
-                    )
-            }
-        </div>
-    )
+                    )}
+                </div>
+            </div>
+        </>
+    );
 }
 
 export default ProfilePage

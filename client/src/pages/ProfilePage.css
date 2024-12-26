@@ -1,9 +1,11 @@
 /* src/pages/ProfilePage.css */
+.profile-container {
+    width: 100%;
+}
 
 .profile-page {
     font-family: Arial, sans-serif;
     color: #F0F0F0;
-    background-color: #121212;
     padding: 20px;
     height: 100vh;
 }
