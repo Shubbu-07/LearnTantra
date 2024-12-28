@@ -1,4 +1,4 @@
-/* src/pages/ProfilePage.css */
+/* Styling for the profile page */
 .profile-container {
     width: 100%;
 }
@@ -28,7 +28,6 @@
     flex: 1;
 }
 
-
 .create-classroom-btn {
     background-color: #333;
     color: white;
@@ -41,6 +40,7 @@
 .create-classroom-btn:hover {
     background-color: #555;
 }
+
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -88,34 +88,39 @@
 .popup-buttons button:hover {
     background-color: #555;
 }
+
 .classroom-list {
     margin-top: 20px;
 }
 
-.classroom-list table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #333333;
-    border-radius: 5px;
-    overflow: hidden;
+.classroom-list .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.classroom-list th,
-.classroom-list td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.classroom-list th {
+.classroom-list .classroom-card {
     background-color: #333;
     color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    flex: 1 1 calc(33.333% - 20px);
+    max-width: calc(33.333% - 20px);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.classroom-list tr:nth-child(even) {
-    background-color: #333333;
+.classroom-list .classroom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.classroom-list tr:hover {
-    background-color: #ddd;
+.classroom-list .classroom-card h4 {
+    margin: 0 0 10px;
+}
+
+.classroom-list .classroom-card p {
+    margin: 0;
+    color: #ddd;
 }

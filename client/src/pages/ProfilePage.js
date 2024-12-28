@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
@@ -122,16 +122,24 @@ const ProfilePage = () => {
     return (
         <>
         <div className="profile-container flex bg-background">
-            <div className="h-full w-20 md:w-64 ">
-                <img
-                    src={
-                    "https://th.bing.com/th/id/OIP.OWHqt6GY5jrr7ETvJr8ZXwHaHa?w=160&h=180&c=7&r=0&o=5&pid=1.7" ||
-                    "default-profile.png"
-                    }
-                    alt="Profile"
-                    className="rounded-full w-12 h-12 ms-5 my-4"
-                />
-            </div>
+            {user && (
+                <div className="h-full w-20 md:w-64 flex items-center">
+                    <div className='flex-none'>
+                        <img
+                            src={
+                            "https://th.bing.com/th/id/OIP.OWHqt6GY5jrr7ETvJr8ZXwHaHa?w=160&h=180&c=7&r=0&o=5&pid=1.7" ||
+                            "default-profile.png"
+                            }
+                            alt="Profile"
+                            className="rounded-full w-12 h-12 ms-5 my-4"
+                        />
+                    </div>
+                    <div className='text-txt flex-initial mb-2'>
+                        <h2 className='text-xl px-3 '>{user.name} <sup>{user.role}</sup></h2>
+                        <p className='text-xs px-3'>{user.email}</p>
+                    </div>
+                </div>
+            )}
                 <div className="profile-page flex-auto">
                     {loading ? (
                         <div className="loading">Loading...</div>
@@ -139,9 +147,9 @@ const ProfilePage = () => {
                         <>
                             <div className="profile-info">
                                 <div className="profile-details">
-                                    <h2>{user.name}</h2>
+                                    {/* <h2>{user.name}</h2>
                                     <p>Email: {user.email}</p>
-                                    <p>Role: {user.role}</p>
+                                    <p>Role: {user.role}</p> */}
                                     {user.role === 'teacher' && (
                                         <button className="create-classroom-btn" onClick={() => setShowPopup(true)}>
                                             Create Classroom
@@ -177,47 +185,35 @@ const ProfilePage = () => {
                             {user.role === 'teacher' && (
                                 <div className="classroom-list">
                                     <h3>Classrooms created by me</h3>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {classroomsCreatedByMe.map((classroom) => (
-                                                <tr key={classroom._id} onClick={() => handleRowClick(classroom._id)}>
-                                                    <td>{classroom.name}</td>
-                                                    <td>{classroom.description}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                    <div className="card-container">
+                                        {classroomsCreatedByMe.map((classroom) => (
+                                            <div 
+                                                className="classroom-card" 
+                                                key={classroom._id} 
+                                                onClick={() => handleRowClick(classroom._id)}
+                                            >
+                                                <h4>{classroom.name}</h4>
+                                                <p>{classroom.description}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
 
-                            <div className="classroom-list">
+                        <div className="classroom-list">
                                 <h3>Classrooms joined by me</h3>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {classroomsJoinedByMe.map((classroom) => (
-                                            <tr
-                                                key={classroom._id}
-                                                onClick={() => handleRowClick(classroom._id)}
-                                                className="clickable-row"
-                                            >
-                                                <td>{classroom.name}</td>
-                                                <td>{classroom.description}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <div className="card-container">
+                                    {classroomsJoinedByMe.map((classroom) => (
+                                        <div 
+                                            className="classroom-card" 
+                                            key={classroom._id} 
+                                            onClick={() => handleRowClick(classroom._id)}
+                                        >
+                                            <h4>{classroom.name}</h4>
+                                            <p>{classroom.description}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </>
                     ) : (
@@ -229,4 +225,4 @@ const ProfilePage = () => {
     );
 }
 
-export default ProfilePage
+export default ProfilePage;
