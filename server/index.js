@@ -42,6 +42,7 @@ const classroomRoutes = require('./routes/classroomRoutes');
 app.use('/auth', authRoutes);
 app.use('/class', classroomRoutes);
 
+
 app.get('/', (req, res) => {
     res.send("Hello world!")
 });
