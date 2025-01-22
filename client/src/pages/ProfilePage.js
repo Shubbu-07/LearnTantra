@@ -11,6 +11,7 @@ const ProfilePage = () => {
     const [description, setDescription] = useState('');
     const [classroomsCreatedByMe, setClassroomsCreatedByMe] = useState([]);
     const [classroomsJoinedByMe, setClassroomsJoinedByMe] = useState([]);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -118,11 +119,43 @@ const ProfilePage = () => {
     const handleRowClick = (classroomId) => {
         navigate(`/classes/${classroomId}`);  // Navigate to the class details page
     };
+
+    const handleDelete = async (classroomId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this classroom?");
+        if (!confirmDelete) return;
+        setIsDeleting(true);  // Disable further deletion attempts
+      
+        try {
+          const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/class/delete/${classroomId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          });
+      
+          const data = await response.json();
+      
+          if (response.ok) {
+            toast.success(data.message);
+            setClassroomsCreatedByMe((prevClassrooms) => 
+              prevClassrooms.filter((classroom) => classroom._id !== classroomId)
+            );
+          } else {
+            toast.error(data.message || 'Failed to delete classroom');
+          }
+        } catch (error) {
+          toast.error('An error occurred while deleting classroom');
+        } finally {
+          setIsDeleting(false);  // Enable button after the process
+        }
+      };
     
     return (
         <>
         <div className="profile-container flex bg-background">
             {user && (
+                <>
                 <div className="h-full w-20 md:w-64 flex items-center">
                     <div className='flex-none'>
                         <img
@@ -139,6 +172,8 @@ const ProfilePage = () => {
                         <p className='text-xs px-3'>{user.email}</p>
                     </div>
                 </div>
+                    
+                </>
             )}
                 <div className="profile-page flex-auto">
                     {loading ? (
@@ -147,9 +182,6 @@ const ProfilePage = () => {
                         <>
                             <div className="profile-info">
                                 <div className="profile-details">
-                                    {/* <h2>{user.name}</h2>
-                                    <p>Email: {user.email}</p>
-                                    <p>Role: {user.role}</p> */}
                                     {user.role === 'teacher' && (
                                         <button className="create-classroom-btn" onClick={() => setShowPopup(true)}>
                                             Create Classroom
@@ -187,13 +219,22 @@ const ProfilePage = () => {
                                     <h3>Classrooms created by me</h3>
                                     <div className="card-container">
                                         {classroomsCreatedByMe.map((classroom) => (
-                                            <div 
-                                                className="classroom-card" 
-                                                key={classroom._id} 
-                                                onClick={() => handleRowClick(classroom._id)}
-                                            >
-                                                <h4>{classroom.name}</h4>
-                                                <p>{classroom.description}</p>
+                                            <div className='class-outer-div'>
+                                                <div 
+                                                    className="classroom-card" 
+                                                    key={classroom._id} 
+                                                    onClick={() => handleRowClick(classroom._id)}
+                                                >
+                                                    <h4>{classroom.name}</h4>
+                                                    <p>{classroom.description}</p>
+                                                </div>
+                                                <button 
+                                                    className='classroom-button' 
+                                                    onClick={() => handleDelete(classroom._id)} 
+                                                    disabled={isDeleting} 
+                                                >
+                                                    Delete
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
@@ -221,6 +262,7 @@ const ProfilePage = () => {
                     )}
                 </div>
             </div>
+            
         </>
     );
 }
