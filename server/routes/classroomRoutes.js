@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Classroom = require('../models/classroomModel');
 const User = require('../models/userModel')
 const Post = require('../models/postModel');
@@ -251,8 +252,7 @@ router.get('/classroomsforstudent', authTokenHandler, async (req, res) => {
 })
 
 // Delete Classroom route
-
-router.delete('/delete/:classid', async (req, res) => {
+router.delete('/delete/:classid', authTokenHandler,  async (req, res) => {
     const { classid } = req.params;
     try{
         // Find and delete the classroom
@@ -265,6 +265,81 @@ router.delete('/delete/:classid', async (req, res) => {
         return responseFunction(res, 200, 'Classroom deleted successfully', null, true);
     }
     catch (err){
+        return responseFunction(res, 500, 'Internal server error', err, false);
+    }
+});
+
+// leave classroom route
+router.delete('/leave/:classid', authTokenHandler, async (req, res) => {
+    const { classid } = req.params;
+    console.log("classroomId: ", classid);
+    const userEmail = req.user?.email; // Get the authenticated user's email
+    console.log("email: ", userEmail);
+    
+
+    try {
+        // Find and delete the student's entry from the classroomJoin collection
+        const classroomEntry = await ClassroomJoin.findOneAndDelete({
+            classroomId: classid,
+            studentEmail: userEmail
+        });
+
+        if (!classroomEntry) {
+            return res.status(400).json({ message: 'You are not part of this classroom' });
+        }
+
+        return res.status(200).json({ message: 'Successfully left the classroom' });
+    } catch (err) {
+        return res.status(500).json({ message: 'Internal server error', error: err });
+    }
+});
+
+
+// Get classroom stats for teachers
+router.get('/stats/teacher', authTokenHandler, async (req, res) => {
+    try {
+        // Fetch classrooms owned by the logged-in teacher
+        const classrooms = await Classroom.find({ owner: new mongoose.Types.ObjectId(req.userId) });
+
+        if (classrooms.length === 0) {
+            console.log("No classrooms found for user");
+        }
+        // Map stats for each classroom
+        const stats = classrooms.map((classroom) => ({
+            classId: classroom._id,
+            name: classroom.name,
+            description: classroom.description,
+            studentsCount: classroom.students.length,
+            postsCount: classroom.posts.length
+        }));
+
+        return responseFunction(res, 200, 'Classroom stats fetched successfully', stats, true);
+    } catch (err) {
+        console.error(err);
+        return responseFunction(res, 500, 'Internal server error', err, false);
+    }
+});
+
+// Get classroom details for students
+router.get('/details/student', async (req, res) => {
+    try {
+        // Fetch the logged-in user's email
+        const userEmail = req.email;
+
+        // Find classrooms where the student is enrolled
+        const classrooms = await Classroom.find({ students: userEmail });
+
+        // Map details for each classroom
+        const details = classrooms.map((classroom) => ({
+            classId: classroom._id,
+            name: classroom.name,
+            description: classroom.description,
+            studentsCount: classroom.students.length
+        }));
+
+        return responseFunction(res, 200, 'Classroom details fetched successfully', details, true);
+    } catch (err) {
+        console.error(err);
         return responseFunction(res, 500, 'Internal server error', err, false);
     }
 });
