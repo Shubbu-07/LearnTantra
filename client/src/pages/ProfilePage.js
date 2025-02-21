@@ -150,6 +150,31 @@ const ProfilePage = () => {
           setIsDeleting(false);  // Enable button after the process
         }
       };
+
+      const handleLeaveClassroom = async (classroomId) => {
+        const confirmLeave = window.confirm("Are you sure you want to leave this classroom?");
+        if (!confirmLeave) return;
+    
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/class/leave/${classroomId}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+    
+            const data = await response.json(); 
+    
+            if (response.ok) {
+                toast.success(data.message);
+                // Update the state to remove the classroom from joined list
+                setClassroomsJoinedByMe((prev) => prev.filter((classroom) => classroom._id !== classroomId));
+            } else {
+                toast.error(data.message || 'Failed to leave classroom');
+            }
+        } catch (error) {
+            toast.error('An error occurred while leaving the classroom');
+        }
+    };
+    
     
     return (
         <>
@@ -245,6 +270,7 @@ const ProfilePage = () => {
                                 <h3>Classrooms joined by me</h3>
                                 <div className="card-container">
                                     {classroomsJoinedByMe.map((classroom) => (
+                                        <div className='class-outer-div'>
                                         <div 
                                             className="classroom-card" 
                                             key={classroom._id} 
@@ -252,6 +278,14 @@ const ProfilePage = () => {
                                         >
                                             <h4>{classroom.name}</h4>
                                             <p>{classroom.description}</p>
+                                        </div>
+                                        <button 
+                                                    className='classroom-button' 
+                                                    onClick={() => handleLeaveClassroom(classroom._id)} 
+                                                    disabled={isDeleting} 
+                                                >
+                                                    Leave
+                                                </button>
                                         </div>
                                     ))}
                                 </div>
